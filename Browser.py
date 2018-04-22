@@ -1,6 +1,8 @@
 from Log import log
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import time
+import Utils
 
 class Browser:
     """Browser is the class which handles
@@ -17,7 +19,29 @@ class Browser:
             log("Error due to ", str(ex))
         return
 
+    def open_link(self, link):
+        if Utils.is_empty_string(link):
+            log("openLink Failed due to empty link address")
+            return
+        try:
+            self.browser.get(link)
+            log("Opened link : ", link)
+        except Exception as ex:
+            log("Failed due to ", str(ex))
+        return
+
+    def close_browser(self):
+        if self.browser is None:
+            log('Browser already closed or not created')
+            return
+        self.browser.quit()
+        self.browser = None
+        log('Browser closed')
+        return
+
 
 if __name__ == '__main__':
-	br = Browser()
-	
+    br = Browser()
+    br.open_link("https://www.google.com/")
+    time.sleep(2)
+    br.close_browser()
