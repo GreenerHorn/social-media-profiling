@@ -39,9 +39,26 @@ class Browser:
         log('Browser closed')
         return
 
-
+    def scroll(self, count=3):
+        if self.browser is None:
+            log('Browser already closed or not created')
+            return
+        try:
+            elm = self.browser.find_element_by_tag_name('html')
+            i = 0
+            while i < count:
+                elm.send_keys(Keys.END)
+                time.sleep(1)
+                i = i + 1
+            elm.send_keys(Keys.HOME)
+            log('Scroll complete')
+        except Exception as scrollEx:
+            log('Failed scrolling due to ', str(scrollEx))
+        return
 if __name__ == '__main__':
     br = Browser()
-    br.open_link("https://www.google.com/")
-    time.sleep(2)
+    br.open_link("https://pythonspot.com/random-numbers/")
+    Utils.random_wait()
+    br.scroll()
     br.close_browser()
+
