@@ -63,10 +63,10 @@ class DataBaseHandler:
 
 if __name__ == "__main__":
     x = Detail()
-    x.email = "vivek"
+    x.email = "abcd"
     DataBaseHandler().insert_from_details(x)
     Log.log(DataBaseHandler().get_data_with_email("vivek").__dict__)
-    x.phoneno = "7030307739"
+    x.phoneno = "123456789"
     DataBaseHandler().update_from_details(x)
 
 
