@@ -37,7 +37,7 @@ class DataBaseHandler:
         Log.log(cursor)
         return Detail().init_with_dict(cursor)
 
-    def update_from_details(self,detail):
+    def update_from_detail(self,detail):
         if type(detail).__name__ != 'Detail':
             Log.log("No suitable detail given")
             return
@@ -45,16 +45,19 @@ class DataBaseHandler:
         search_dict = {'email':detail.email}
         cursor = DataBaseHandler.collection.find_one(search_dict)
         Log.log(cursor)
+
         if cursor is None:
             Log.log("data not found, while updating so inserting the data")
             self.insert_from_details(detail)
             return
+
         detail_dict = detail.__dict__
         if '_id' in detail_dict:
             detail_dict.pop('_id', None)
+
         set_dict = {'$set':detail_dict}
         Log.log(set_dict)
-        Log.log("Update status ",DataBaseHandler.collection.update_one(search_dict,set_dict)!= None)
+        Log.log("Update status ", DataBaseHandler.collection.update_one(search_dict, set_dict) is not None)
         return
 
 
