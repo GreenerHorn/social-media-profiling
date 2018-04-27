@@ -3,6 +3,7 @@ class FacebookData:
     def __init__(self):
         self.fb_url = ""
         self.fb_profilephoto = ""
+        self.fb_possible_ids = []
 
 class TwitterData:
     def __init__(self):

@@ -1,6 +1,8 @@
 import random
 import Log
 import time
+import urllib
+
 
 """Checks given string is empty or not. Return True if string is empty"""
 def is_empty_string(string):
@@ -18,3 +20,8 @@ def random_wait():
 
 def remove_non_ascii(text):
     return ''.join([i if ord(i) < 128 else ' ' for i in text])
+
+def url_encode(query):
+    encoded = urllib.parse.quote(query)
+    Log.log("encoded", query, encoded)
+    return encoded
