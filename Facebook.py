@@ -137,10 +137,39 @@ class FacebookParser:
         return
 
     def __get_likes(self):
+        self.browser.open_link(self.data.fb_url+"/likes_all")
+        Utils.random_wait()
+        self.browser.scroll_end()
+        Utils.random_wait()
+        page = BeautifulSoup(self.browser.browser.page_source,"lxml")
+        likes_all = page.find_all("div",{"class":"_6a _6b"})
+        Log.log("likes_all count ",len(likes_all))
+        like_list = []
+        insights = []
+        for like in likes_all:
+            like_text_tag = like.find("div",{"class":"fsl fwb fcb"})
+            like_type_tag = like.find("div",{"class":"fsm fwn fcg"})
+            if like_text_tag is not None and like_type_tag is not None:
+                like_text = like_text_tag.text
+                like_type = like_type_tag.text
+                Log.log(like_type," ",like_text)
+                like_list.append(like_text)
+                if like_type not in insights:
+                    insights.append(like_type)
+                    insights.append(1)
+                else:
+                    index = insights.index(like_type)
+                    insights[index+1] += 1
+        self.data.fb_likes = like_list
+        self.data.fb_likes_insights = insights
+        Log.log("insights ", insights)
+        Log.log("total number of like_list ", len(like_list)," like_list ", like_list)
         return
+
     def __find_all_details(self):
         Log.log("finding details")
         self.__get_overview()
+        self.__get_likes()
         Log.log("data ", self.data.__dict__)
         return
 
@@ -159,4 +188,4 @@ if __name__ == "__main__":
     fp.login()
     fp.search("Reshav Kumar", "", "Reshav Kumar")
     Log.log(fp.data.__dict__)
-    br.close_browser()
+    #br.close_browser()
