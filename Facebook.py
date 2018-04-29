@@ -1,17 +1,18 @@
 from bs4 import BeautifulSoup
-
 import Constants
-import Log, Utils
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+
 from Browser import Browser
 from Details import Detail
+import Log, Utils
 
 
 class FacebookParser:
     fb_base_url = "https://www.facebook.com"
-    fb_query_search_url = fb_base_url+"/search/people/?q="
-    def __init__(self,browser):
+    fb_query_search_url = fb_base_url + "/search/people/?q="
+
+    def __init__(self, browser):
         self.browser = browser
         self.data = Detail()
         return
@@ -43,29 +44,107 @@ class FacebookParser:
             if url and lis:
                 url = url.replace('?ref=br_rs', '')
                 url = url.replace('&ref=br_rs', '')
+                url = url.split('_')[0]
                 if url not in links and 'serp_result_link' in lis and 'EntRegularPersonalUser' in lis and 'https://www.facebook.com/' in url:
                     links.append(url)
-                    Log.log("id fetched : ",url)
+                    Log.log("id fetched : ", url)
         return links
 
-    def __search(self,search_item):
-        search_url = FacebookParser.fb_query_search_url+Utils.url_encode(search_item)
-        Log.log("search_url",search_url)
+    def __search(self, search_item):
+        search_url = FacebookParser.fb_query_search_url + Utils.url_encode(search_item)
+        Log.log("search_url", search_url)
         self.browser.open_link(search_url)
         Utils.random_wait()
         page = BeautifulSoup(self.browser.browser.page_source, 'lxml')
         links = self.__get_people_links(page)
         Log.log(links)
-        if len(links)>0:
+        if len(links) > 0:
             self.data.fb_url = links[0]
             self.data.fb_possible_ids = links
             return True
         return False
 
-    def __find_all_details(self):
+    def __get_overview(self):
+        self.browser.open_link(self.data.fb_url + '/about?section=overview')
+        self.browser.scroll()
+        Utils.random_wait()
+        page = BeautifulSoup(self.browser.browser.page_source, 'lxml')
+        self.__get_profile_pic(page)
+        self.__get_friends_list(page)
+        try:
+            overview = page.find_all('div', {'class': '_c24 _50f4'})
+            for over in overview:
+                inner_text = over.text
+                strWithNewLine = [s.strip() for s in inner_text.splitlines()]
+                for string in strWithNewLine:
+                    string = Utils.remove_non_ascii(string)
+                    string = string.lower()
+                    if 'works' in string:
+                        self.data.works = string.replace('works', '')
+                    elif 'studies' in string:
+                        self.data.studies = string.replace('studies', '')
+                    elif 'studied' in string:
+                        self.data.studied = string.replace('studied', '')
+                    elif 'lives' in string:
+                        self.data.lives = string.replace('lives', '')
+                    elif 'from' in string:
+                        self.data.home = string.replace('from', '')
+
+            Log.log("overview done")
+        except Exception as ex:
+            Log.log('[-] overview ' + str(ex))
+        return
+
+    def __get_profile_pic(self, page):
         Log.log("")
-        pass
-    def search(self,email,phone,name):
+        try:
+            elements = page.find('img', {'class': '_11kf img'})
+            # Log.log(elements)
+            inner_text = elements.get('src')
+            Log.log(inner_text)
+            strWithNewLine = [s.strip() for s in inner_text.splitlines()]
+            for i in strWithNewLine:
+                if Utils.is_empty_string(i) == False:
+                    self.data.fb_profilephoto = i;
+                    Log.log('Profile Pic available ', i)
+                    return
+        except Exception as e:
+            Log.log(str(e), ' failed in getImage (Profile Pic Not available) ')
+        return
+
+    def __get_friends_list(self, page):
+        friend_list = []
+        friend_list_html = page.find_all("div", {"class": "clearfix _5qo4"})
+        for friend in friend_list_html:
+            img_name_tag = friend.find("img")
+            url_tag = friend.find("a")
+            name = ""
+            image = ""
+            url =""
+            if url_tag and url_tag.get("href"):
+                url = url_tag.get("href")
+            if img_name_tag and img_name_tag.get("src"):
+                image = img_name_tag.get("src")
+            if img_name_tag and img_name_tag.get("aria-label"):
+                name = img_name_tag.get("aria-label")
+            friend_list.append(name)
+            friend_list.append(image)
+            friend_list.append(url)
+
+            Log.log(name , " " , url , " " , image)
+        self.data.fb_friend = friend_list
+        Log.log("Friend list complete")
+        return
+
+    def __get_likes(self):
+        return
+    def __find_all_details(self):
+        Log.log("finding details")
+        self.__get_overview()
+        Log.log("data ", self.data.__dict__)
+        return
+
+    def search(self, email, phone, name):
         self.data.phoneno = phone
         self.data.name = name
         self.data.email = email
@@ -74,11 +153,10 @@ class FacebookParser:
         return
 
 
-
-if __name__ =="__main__":
+if __name__ == "__main__":
     br = Browser()
     fp = FacebookParser(br)
     fp.login()
-    fp.search("","","Vivek Kundariya")
+    fp.search("Reshav Kumar", "", "Reshav Kumar")
     Log.log(fp.data.__dict__)
     br.close_browser()

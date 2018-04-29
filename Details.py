@@ -4,6 +4,13 @@ class FacebookData:
         self.fb_url = ""
         self.fb_profilephoto = ""
         self.fb_possible_ids = []
+        self.works = ""
+        self.studies = ""
+        self.studied = ""
+        self.lives = ""
+        self.home = ""
+        self.fb_friend = []
+        self.fb_likes = []
 
 class TwitterData:
     def __init__(self):

@@ -8,10 +8,10 @@ import urllib
 def is_empty_string(string):
     return string is None or string == ""
 
-"""Generate random number between 0.5 and 1.5"""
+"""Generate random number between 0.7 and 1.7"""
 def get_random_number():
     Log.log("Generating random number")
-    return random.random()+0.5
+    return random.random()+0.7
 
 def random_wait():
     Log.log("random wait")
