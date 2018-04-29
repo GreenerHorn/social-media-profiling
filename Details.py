@@ -9,6 +9,7 @@ class FacebookData:
         self.studied = ""
         self.lives = ""
         self.home = ""
+        self.tier_city = ""
         self.fb_friend = []
         self.fb_likes = []
 

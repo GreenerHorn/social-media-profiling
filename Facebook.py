@@ -87,9 +87,9 @@ class FacebookParser:
                         self.data.studied = string.replace('studied', '')
                     elif 'lives' in string:
                         self.data.lives = string.replace('lives', '')
+                        self.data.tier_city = Utils.tier_city(self.data.lives)
                     elif 'from' in string:
                         self.data.home = string.replace('from', '')
-
             Log.log("overview done")
         except Exception as ex:
             Log.log('[-] overview ' + str(ex))
