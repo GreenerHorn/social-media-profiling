@@ -12,6 +12,12 @@ class FacebookData:
         self.tier_city = ""
         self.fb_friend = []
         self.fb_likes = []
+        self.count_auto = 0
+        self.count_pol = 0
+        self.count_shop = 0
+        self.count_travel = 0
+        self.total_likes = 0
+
 
 class TwitterData:
     def __init__(self):

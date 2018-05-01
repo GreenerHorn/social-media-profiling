@@ -66,7 +66,7 @@ class FacebookParser:
 
     def __get_overview(self):
         self.browser.open_link(self.data.fb_url + '/about?section=overview')
-        self.browser.scroll()
+        self.browser.scroll_end()
         Utils.random_wait()
         page = BeautifulSoup(self.browser.browser.page_source, 'lxml')
         self.__get_profile_pic(page)
@@ -105,11 +105,49 @@ class FacebookParser:
             strWithNewLine = [s.strip() for s in inner_text.splitlines()]
             for i in strWithNewLine:
                 if Utils.is_empty_string(i) == False:
-                    self.data.fb_profilephoto = i;
+                    self.data.fb_profilephoto = i
                     Log.log('Profile Pic available ', i)
                     return
         except Exception as e:
             Log.log(str(e), ' failed in getImage (Profile Pic Not available) ')
+        return
+
+    def __get_like_auto_politics(self,array_of_like):
+        self.data.total_likes = len(array_of_like)
+        auto_keywords = ['auto', 'motor', 'drive', 'gear', 'speed', 'race', 'racing', 'formula', 'formula one',
+                         'drag race', 'vehicle', 'car', 'bike', 'moto', 'offroad', 'sae', 'baja', 'tyre', 'mechanical',
+                         'f1', 'toyota', 'volkswagen', 'ford', 'bmw', 'audi', 'honda', 'suzuki', 'mazda', 'renault',
+                         'nissan', 'volvo', 'yamaha', 'mahindra', 'kia', 'hyundai', 'fiat', 'tesla', 'jaguar',
+                         'ferrari', 'chevrolet', 'tata', 'bugatti', 'lamborghini', 'jeep']
+        politics_keywords = ['barack obama', 'donald trump', 'narendra modi', 'arvind kejriwal', 'shashi tharoor',
+                             'rahul gandhi', 'bjp', 'congress', 'bhartiya janata party', 'lalu prasad', 'nitish kumar',
+                             'arun jaitley', 'mamata banerjee', 'sushma swaraj', 'amit shah', 'india', 'gandhi',
+                             'nehru', 'ambedkar', 'atal', 'kalam', 'pm', 'president', 'shastri', 'sardar patel', 'rss',
+                             'rashtriya', 'netaji', 'subhash bose', 'ntr', 'manmohan', 'naidu', 'thackeray', 'rao',
+                             'reddy']
+        travel = ['makemytrip', 'cleartrip', 'irctc', 'indigo', 'jetairways', 'emirates', 'yatra', 'paytm', 'spicejet',
+                  'airasia', 'oyo', 'bookmyshow', 'pvr', 'ixigo', 'discovery', 'national geography', 'history',
+                  'redbus']
+        online_shopping = ['flipkart', 'amazon', 'myntra', 'jabong', 'paytm', 'shopclues', 'snapdeal', 'foodpanda',
+                           'food', 'mcdonald', 'pizza', 'kfc']
+        try:
+            for i in array_of_like:
+                for j in auto_keywords:
+                    if j.lower() in i.lower():
+                        self.data.count_auto += 1
+                for k in politics_keywords:
+                    if k.lower() in i.lower():
+                        self.data.count_pol += 1
+                for k in online_shopping:
+                    if k.lower() in i.lower():
+                        self.data.count_shop += 1
+                for k in travel:
+                    if k.lower() in i.lower():
+                        self.data.count_travel += 1
+        except Exception as ex :
+            Log.log("error ",str(ex))
+
+        Log.log("Likes auto politics shopping travel done")
         return
 
     def __get_friends_list(self, page):
@@ -164,6 +202,7 @@ class FacebookParser:
         self.data.fb_likes_insights = insights
         Log.log("insights ", insights)
         Log.log("total number of like_list ", len(like_list)," like_list ", like_list)
+        self.__get_like_auto_politics(like_list)
         return
 
     def __find_all_details(self):
