@@ -48,17 +48,36 @@ class Browser:
             i = 0
             while i < count:
                 elm.send_keys(Keys.END)
-                time.sleep(1)
+                Utils.random_wait()
                 i = i + 1
             elm.send_keys(Keys.HOME)
             log('Scroll complete')
         except Exception as scrollEx:
             log('Failed scrolling due to ', str(scrollEx))
         return
+
+    def scroll_end(self):
+        try:
+            # Get scroll height
+            last_height = self.browser.execute_script("return document.body.scrollHeight")
+            while True:
+                self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")  # Wait to load page
+                Utils.random_wait()
+                # Calculate new scroll height and compare with last scroll height
+                new_height = self.browser.execute_script("return document.body.scrollHeight")
+                if new_height == last_height:
+                    break
+                last_height = new_height
+            log("end of page")
+        except Exception as ex:
+            log("exception ",str(ex))
+        return
+
 if __name__ == '__main__':
     br = Browser()
     br.open_link("https://pythonspot.com/random-numbers/")
     Utils.random_wait()
-    br.scroll()
+    br.scroll_end()
+
     br.close_browser()
 

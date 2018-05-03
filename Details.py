@@ -3,6 +3,22 @@ class FacebookData:
     def __init__(self):
         self.fb_url = ""
         self.fb_profilephoto = ""
+        self.fb_possible_ids = []
+        self.works = ""
+        self.studies = ""
+        self.studied = ""
+        self.lives = ""
+        self.home = ""
+        self.tier_city = ""
+        self.fb_friend = []
+        self.fb_likes = []
+        self.count_auto = 0
+        self.count_pol = 0
+        self.count_shop = 0
+        self.count_travel = 0
+        self.total_likes = 0
+        self.fb_movies_genre =[]
+
 
 class TwitterData:
     def __init__(self):
