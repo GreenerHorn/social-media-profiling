@@ -17,6 +17,7 @@ class FacebookData:
         self.count_shop = 0
         self.count_travel = 0
         self.total_likes = 0
+        self.fb_movies_genre =[]
 
 
 class TwitterData:

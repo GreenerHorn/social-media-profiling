@@ -1,3 +1,4 @@
+import requests
 from bs4 import BeautifulSoup
 import Constants
 from selenium import webdriver
@@ -112,7 +113,7 @@ class FacebookParser:
             Log.log(str(e), ' failed in getImage (Profile Pic Not available) ')
         return
 
-    def __get_like_auto_politics(self,array_of_like):
+    def __get_likes_auto_politics(self, array_of_like):
         self.data.total_likes = len(array_of_like)
         auto_keywords = ['auto', 'motor', 'drive', 'gear', 'speed', 'race', 'racing', 'formula', 'formula one',
                          'drag race', 'vehicle', 'car', 'bike', 'moto', 'offroad', 'sae', 'baja', 'tyre', 'mechanical',
@@ -144,8 +145,8 @@ class FacebookParser:
                 for k in travel:
                     if k.lower() in i.lower():
                         self.data.count_travel += 1
-        except Exception as ex :
-            Log.log("error ",str(ex))
+        except Exception as ex:
+            Log.log("error ", str(ex))
 
         Log.log("Likes auto politics shopping travel done")
         return
@@ -158,7 +159,7 @@ class FacebookParser:
             url_tag = friend.find("a")
             name = ""
             image = ""
-            url =""
+            url = ""
             if url_tag and url_tag.get("href"):
                 url = url_tag.get("href")
             if img_name_tag and img_name_tag.get("src"):
@@ -169,40 +170,59 @@ class FacebookParser:
             friend_list.append(image)
             friend_list.append(url)
 
-            Log.log(name , " " , url , " " , image)
+            Log.log(name, " ", url, " ", image)
         self.data.fb_friend = friend_list
         Log.log("Friend list complete")
         return
 
+    def __get_likes_movies(self, like_list):
+        final = []
+        try:
+            for x in like_list:
+                xGenre = search(x)
+                for each in xGenre:
+                    if each not in final:
+                        final.append(each)
+                        final.append(1)
+                    else:
+                        index = final.index(each)
+                        final[index + 1] += 1
+        except Exception as ex:
+            print(str(ex))
+            print("Error in getGenre")
+        self.data.fb_movies_genre = final
+        return
+
     def __get_likes(self):
-        self.browser.open_link(self.data.fb_url+"/likes_all")
+        self.browser.open_link(self.data.fb_url + "/likes_all")
         Utils.random_wait()
         self.browser.scroll_end()
         Utils.random_wait()
-        page = BeautifulSoup(self.browser.browser.page_source,"lxml")
-        likes_all = page.find_all("div",{"class":"_6a _6b"})
-        Log.log("likes_all count ",len(likes_all))
+        page = BeautifulSoup(self.browser.browser.page_source, "lxml")
+        likes_all = page.find_all("div", {"class": "_6a _6b"})
+        Log.log("likes_all count ", len(likes_all))
         like_list = []
         insights = []
         for like in likes_all:
-            like_text_tag = like.find("div",{"class":"fsl fwb fcb"})
-            like_type_tag = like.find("div",{"class":"fsm fwn fcg"})
+            like_text_tag = like.find("div", {"class": "fsl fwb fcb"})
+            like_type_tag = like.find("div", {"class": "fsm fwn fcg"})
             if like_text_tag is not None and like_type_tag is not None:
                 like_text = like_text_tag.text
                 like_type = like_type_tag.text
-                Log.log(like_type," ",like_text)
+                Log.log(like_type, " ", like_text)
                 like_list.append(like_text)
                 if like_type not in insights:
                     insights.append(like_type)
                     insights.append(1)
                 else:
                     index = insights.index(like_type)
-                    insights[index+1] += 1
+                    insights[index + 1] += 1
         self.data.fb_likes = like_list
         self.data.fb_likes_insights = insights
         Log.log("insights ", insights)
-        Log.log("total number of like_list ", len(like_list)," like_list ", like_list)
-        self.__get_like_auto_politics(like_list)
+        Log.log("total number of like_list ", len(like_list), " like_list ", like_list)
+        self.__get_likes_auto_politics(like_list)
+        self.__get_likes_movies(like_list)
         return
 
     def __find_all_details(self):
@@ -221,10 +241,48 @@ class FacebookParser:
         return
 
 
+def search(query):
+    mapper = {
+        12: 'Adventure',
+        14: 'Fantasy',
+        16: 'Animation',
+        18: 'Drama',
+        27: 'Horror',
+        28: 'Action',
+        35: 'Comedy',
+        36: 'History',
+        37: 'Western',
+        53: 'Thriller',
+        80: 'Crime',
+        99: 'Documentary',
+        878: 'Science Fiction',
+        9648: 'Mystery',
+        10402: 'Music',
+        10749: 'Romance',
+        10751: 'Family',
+        10752: 'War',
+        10770: 'TV Movie'
+    }
+    try:
+        get_url = 'https://api.themoviedb.org/3/search/movie?api_key=d19e3034bd731f3ecf5809f7a8dbdbbe&query=' + query
+        req = requests.get(get_url)
+        x = req.json()
+        #Log.log(x, get_url)
+        if x["total_results"] > 0:
+            y = x['results'][0]['genre_ids']
+            y = [mapper[e] for e in y]
+            Log.log(y)
+            return y
+    except Exception as ex:
+        Log.log(str(ex))
+        Log.log('movie search failed movie not found for ' + str(query))
+    return []
+
+
 if __name__ == "__main__":
     br = Browser()
     fp = FacebookParser(br)
     fp.login()
     fp.search("Reshav Kumar", "", "Reshav Kumar")
     Log.log(fp.data.__dict__)
-    #br.close_browser()
+    # br.close_browser()
