@@ -67,7 +67,7 @@ class FacebookParser:
 
     def __get_overview(self):
         self.browser.open_link(self.data.fb_url + '/about?section=overview')
-        self.browser.scroll_end()
+        self.browser.scroll()
         Utils.random_wait()
         page = BeautifulSoup(self.browser.browser.page_source, 'lxml')
         self.__get_profile_pic(page)
