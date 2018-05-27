@@ -74,7 +74,7 @@ class TwitterParser:
         Log.log("close matches: ",close_match)
         self.data.twitter_id = matches_handle
         return
-    
+
 if __name__ == "__main__":
     br = Browser.Browser()
     data = Details.Detail()

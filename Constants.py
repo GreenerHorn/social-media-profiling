@@ -7,3 +7,6 @@ FB_PASS = "qwerty1234"
 
 TWITTER_ID = "gj8337"
 TWITTER_PASS = "5friends"
+
+LINKEDIN_ID = 'gujjujalsa1@gmail.com'
+LINKEDIN_PASS = '5friends$'

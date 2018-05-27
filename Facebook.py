@@ -281,7 +281,8 @@ def search(query):
 
 if __name__ == "__main__":
     br = Browser()
-    fp = FacebookParser(br)
+    data = Detail()
+    fp = FacebookParser(br,data)
     fp.login()
     fp.search("Reshav Kumar", "", "Reshav Kumar")
     Log.log(fp.data.__dict__)
