@@ -13,9 +13,9 @@ class FacebookParser:
     fb_base_url = "https://www.facebook.com"
     fb_query_search_url = fb_base_url + "/search/people/?q="
 
-    def __init__(self, browser):
+    def __init__(self, browser,data):
         self.browser = browser
-        self.data = Detail()
+        self.data = data
         return
 
     def login(self):
