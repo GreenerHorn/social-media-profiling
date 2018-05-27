@@ -232,10 +232,11 @@ class FacebookParser:
         Log.log("data ", self.data.__dict__)
         return
 
-    def search(self, email, phone, name):
-        self.data.phoneno = phone
-        self.data.name = name
-        self.data.email = email
+    def search(self):
+        email = self.data.email
+        name = self.data.name
+        phone = self.data.phoneno
+
         if self.__search(phone) == True or self.__search(email) == True or self.__search(name) == True:
             self.__find_all_details()
         return

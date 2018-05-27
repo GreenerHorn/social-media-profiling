@@ -82,6 +82,7 @@ class LinkedInParser:
             link_list += result[1]
             name_list += result[0]
             Log.log(result)
+        self.data.linkedin_id = list(set(link_list))
         return
 
     def search(self):

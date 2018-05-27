@@ -43,10 +43,10 @@ class TwitterParser:
         self.import_following()
         self.browser.open_link("https://twitter.com/" + Constants.TWITTER_ID + "/following")
         Utils.random_wait()
-        br.scroll(4)
+        self.browser.scroll(4)
         time.sleep(6)
         Utils.random_wait()
-        br.scroll_end()
+        self.browser.scroll_end()
         page = BeautifulSoup(self.browser.browser.page_source, 'lxml')
         links = []
         name = []
