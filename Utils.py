@@ -3,6 +3,10 @@ import Log
 import time
 import urllib
 
+def get_int_random(start, end):
+    return random.randint(start, end)
+
+
 def is_empty_string(string):
     return string is None or string == ""
 

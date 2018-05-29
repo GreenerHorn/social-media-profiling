@@ -14,9 +14,7 @@ def find_best_url(titles_urls, name):
     titles2 = []
     Log.log(links1, titles1)
     if titles1 == []:
-        return []
-    elif len(titles1) == 1:
-        best_match = links1
+        return [[],[]]
     else:
         for i in titles1:
             titles2.append(i.split('|')[0].split('-')[0])

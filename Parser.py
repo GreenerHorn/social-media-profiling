@@ -1,6 +1,7 @@
 import json
 
 import Browser
+import DatabaseHandler
 import Log
 
 from Facebook import FacebookParser
@@ -33,10 +34,10 @@ class Parser:
         ld_parser= LinkedInParser(browser,data)
         ld_parser.login()
         ld_parser.search()
-
+        browser.close_browser()
+        DatabaseHandler.DataBaseHandler().insert_from_details(data)
         Log.log(data.__dict__)
         return data.__dict__
 
 if __name__ == "__main__":
     Parser.parse("Vivek Kundariya","vivekkundariya@gmail.com","Vivek Kundariya")
-    

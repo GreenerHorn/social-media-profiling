@@ -12,6 +12,7 @@ class FacebookData:
         self.tier_city = ""
         self.fb_friend = []
         self.fb_likes = []
+        self.fb_likes_insights = []
         self.count_auto = 0
         self.count_pol = 0
         self.count_shop = 0
@@ -36,6 +37,8 @@ class Detail(FacebookData,TwitterData,LinkedInData):
         self.name = ""
         self.email = ""
         self.phoneno = ""
+        self.kloutid = ""
+        self.kloutscore = 0
 
     @staticmethod
     def init_with_dict(detail_dict):
@@ -57,14 +60,17 @@ class Detail(FacebookData,TwitterData,LinkedInData):
         detail.tier_city = detail_dict["tier_city"]
         detail.fb_friend = detail_dict["fb_friend"]
         detail.fb_likes = detail_dict["fb_likes"]
+        detail.fb_likes_insights = detail_dict["fb_likes_insights"]
         detail.count_auto = detail_dict["count_auto"]
         detail.count_pol = detail_dict["count_pol"]
         detail.count_shop = detail_dict["count_shop"]
         detail.count_travel = detail_dict["count_travel"]
         detail.total_likes = detail_dict["total_likes"]
+        detail.fb_movies_genre = detail_dict["fb_movies_genre"]
 
         detail.twitter_id = detail_dict['twitter_id']
-
+        detail.kloutid = detail_dict["kloutid"]
+        detail.kloutscore = detail_dict["kloutscore"]
         detail.linkedin_id = detail_dict['linkedin_id']
         return detail
 

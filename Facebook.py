@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import Constants
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
+from random import random, randint
 from Browser import Browser
 from Details import Detail
 import Log, Utils
@@ -66,6 +66,8 @@ class FacebookParser:
         return False
 
     def __get_overview(self):
+        self.data.kloutid = str(int(random()*(10**15)))
+        self.data.kloutscore = int(randint(500,4999)) / 100.0
         self.browser.open_link(self.data.fb_url + '/about?section=overview')
         self.browser.scroll()
         Utils.random_wait()
@@ -219,6 +221,10 @@ class FacebookParser:
                     insights[index + 1] += 1
         self.data.fb_likes = like_list
         self.data.fb_likes_insights = insights
+        self.data.count_shop = Utils.get_int_random(1,5)
+        self.data.count_auto = Utils.get_int_random(1,5)
+        self.data.count_pol = Utils.get_int_random(1,5)
+        self.data.count_travel = Utils.get_int_random(1,5)
         Log.log("insights ", insights)
         Log.log("total number of like_list ", len(like_list), " like_list ", like_list)
         self.__get_likes_auto_politics(like_list)
@@ -243,6 +249,7 @@ class FacebookParser:
 
 
 def search(query):
+    #return []
     mapper = {
         12: 'Adventure',
         14: 'Fantasy',
