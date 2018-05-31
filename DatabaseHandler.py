@@ -2,6 +2,8 @@ import Log
 import pymongo
 import Constants
 from Details import Detail
+from random import random,randint
+
 
 class DataBaseHandler:
     db = None
@@ -12,7 +14,7 @@ class DataBaseHandler:
         if DataBaseHandler.client is None:
             DataBaseHandler.client = pymongo.MongoClient(Constants.DB_URL)
             DataBaseHandler.db = DataBaseHandler.client[Constants.DATABASE]
-            DataBaseHandler.collection = DataBaseHandler.db[Constants.DB_Collection]
+            DataBaseHandler.collection = DataBaseHandler.db[Constants.DB_UserData_Collection]
         return
 
     def get_all_data(self):
@@ -59,6 +61,28 @@ class DataBaseHandler:
         Log.log(set_dict)
         Log.log("Update status ", DataBaseHandler.collection.update_one(search_dict, set_dict) is not None)
         return
+
+def get_random_Detail():
+    data = Detail()
+    data.name = str(random())
+    data.email = str(random())
+    data.number = str(random())
+    x=["a","b","c"]
+    y=['Tier 3 City','Tier 2 City','Tier 1 City',""]
+    data.purchased_car = x[randint(0,2)]
+    data.count_shop = randint(0, 10)
+    data.count_auto = randint(0, 10)
+    data.count_pol = randint(0, 10)
+    data.count_travel = randint(0, 10)
+    data.tier_city=y[randint(0,3)]
+    return data
+
+def get_recommendation_influencer_list():
+    client = pymongo.MongoClient(Constants.DB_URL)
+    db = client[Constants.DATABASE]
+    collection = db[Constants.DB_Recommender_collection]
+    cursor_list = list(collection.find())
+    return cursor_list
 
 
 if __name__ == "__main__":

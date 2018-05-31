@@ -61,8 +61,9 @@ class Browser:
             # Get scroll height
             last_height = self.browser.execute_script("return document.body.scrollHeight")
             while True:
-                self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")  # Wait to load page
-                Utils.random_wait()
+                elm = self.browser.find_element_by_tag_name('html')
+                elm.send_keys(Keys.END)
+                time.sleep(2)
                 # Calculate new scroll height and compare with last scroll height
                 new_height = self.browser.execute_script("return document.body.scrollHeight")
                 if new_height == last_height:

@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import Constants
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
+from random import random, randint
 from Browser import Browser
 from Details import Detail
 import Log, Utils
@@ -13,9 +13,9 @@ class FacebookParser:
     fb_base_url = "https://www.facebook.com"
     fb_query_search_url = fb_base_url + "/search/people/?q="
 
-    def __init__(self, browser):
+    def __init__(self, browser,data):
         self.browser = browser
-        self.data = Detail()
+        self.data = data
         return
 
     def login(self):
@@ -66,6 +66,8 @@ class FacebookParser:
         return False
 
     def __get_overview(self):
+        self.data.kloutid = str(int(random()*(10**15)))
+        self.data.kloutscore = int(randint(500,4999)) / 100.0
         self.browser.open_link(self.data.fb_url + '/about?section=overview')
         self.browser.scroll()
         Utils.random_wait()
@@ -219,6 +221,10 @@ class FacebookParser:
                     insights[index + 1] += 1
         self.data.fb_likes = like_list
         self.data.fb_likes_insights = insights
+        self.data.count_shop = Utils.get_int_random(1,5)
+        self.data.count_auto = Utils.get_int_random(1,5)
+        self.data.count_pol = Utils.get_int_random(1,5)
+        self.data.count_travel = Utils.get_int_random(1,5)
         Log.log("insights ", insights)
         Log.log("total number of like_list ", len(like_list), " like_list ", like_list)
         self.__get_likes_auto_politics(like_list)
@@ -232,16 +238,18 @@ class FacebookParser:
         Log.log("data ", self.data.__dict__)
         return
 
-    def search(self, email, phone, name):
-        self.data.phoneno = phone
-        self.data.name = name
-        self.data.email = email
+    def search(self):
+        email = self.data.email
+        name = self.data.name
+        phone = self.data.phoneno
+
         if self.__search(phone) == True or self.__search(email) == True or self.__search(name) == True:
             self.__find_all_details()
         return
 
 
 def search(query):
+    #return []
     mapper = {
         12: 'Adventure',
         14: 'Fantasy',
@@ -281,7 +289,8 @@ def search(query):
 
 if __name__ == "__main__":
     br = Browser()
-    fp = FacebookParser(br)
+    data = Detail()
+    fp = FacebookParser(br,data)
     fp.login()
     fp.search("Reshav Kumar", "", "Reshav Kumar")
     Log.log(fp.data.__dict__)

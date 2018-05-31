@@ -3,11 +3,15 @@ import Log
 import time
 import urllib
 
+def get_int_random(start, end):
+    return random.randint(start, end)
+
+
 def is_empty_string(string):
     return string is None or string == ""
 
 def get_random_number():
-    Log.log("Generating random number 1+")
+    #Log.log("Generating random number 1+")
     return random.random() + 1
 
 def random_wait():
