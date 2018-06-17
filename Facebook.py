@@ -65,7 +65,7 @@ class FacebookParser:
             return True
         return False
 
-    def __get_overview(self):
+    def get_overview(self):
         self.data.kloutid = str(int(random()*(10**15)))
         self.data.kloutscore = int(randint(500,4999)) / 100.0
         self.browser.open_link(self.data.fb_url + '/about?section=overview')
@@ -177,11 +177,11 @@ class FacebookParser:
         Log.log("Friend list complete")
         return
 
-    def __get_likes_movies(self, like_list):
+    def get_likes_movies(self, like_list):
         final = []
         try:
             for x in like_list:
-                xGenre = search(x)
+                xGenre = search_genre_movies(x)
                 for each in xGenre:
                     if each not in final:
                         final.append(each)
@@ -195,7 +195,7 @@ class FacebookParser:
         self.data.fb_movies_genre = final
         return
 
-    def __get_likes(self):
+    def get_likes(self):
         self.browser.open_link(self.data.fb_url + "/likes_all")
         Utils.random_wait()
         self.browser.scroll_end()
@@ -228,13 +228,13 @@ class FacebookParser:
         Log.log("insights ", insights)
         Log.log("total number of like_list ", len(like_list), " like_list ", like_list)
         self.__get_likes_auto_politics(like_list)
-        self.__get_likes_movies(like_list)
+        #self.__get_likes_movies(like_list)
         return
 
-    def __find_all_details(self):
+    def find_all_details(self):
         Log.log("finding details")
-        self.__get_overview()
-        self.__get_likes()
+        self.get_overview()
+        self.get_likes()
         Log.log("data ", self.data.__dict__)
         return
 
@@ -244,11 +244,11 @@ class FacebookParser:
         phone = self.data.phoneno
 
         if self.__search(phone) == True or self.__search(email) == True or self.__search(name) == True:
-            self.__find_all_details()
-        return
+            return True
+        return False
 
 
-def search(query):
+def search_genre_movies(query):
     #return []
     mapper = {
         12: 'Adventure',

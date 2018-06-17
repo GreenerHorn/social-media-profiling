@@ -14,6 +14,7 @@ tier_city_map = {
 class Recommendation:
     def __init__(self):
         self.car = ""
+        self.car_image = ""
         self.influencer = []
         self.percentage = 0
     @staticmethod
@@ -105,9 +106,14 @@ class RecommendationDataMap:
 
 
 class Recommender:
-    car_list = ["Mahindra NuvoSport", "Mahindra KUV100 NXT", "Mahindra Bolero", "Mahindra Scorpio",
-        "Mahindra TUV300", "Mahindra XUV500", "Mahindra Xylo"]
-
+    car_list = ["Mahindra NuvaSport", "Mahindra KUV100 NXT", "Mahindra Bolero", "Mahindra Scorpio",
+                "Mahindra Thar", "Mahindra TUV300", "Mahindra Verito", "Mahindra XUV500", "Mahindra Xylo",
+                "Mahindra e2o Plus", "Mahindra Actyon", "Mahindra eVerito"]
+    car_image_list = ["Automotive-Product-Panel-Main-Nuvosport.jpg",  "mahindra-kuv100-nxt-listing-360x332px.jpg",
+                      "bolero.jpg",  "scorpio.jpg",  "thar.jpg",  "mahindra-tuv300-new-360x332px.jpg",
+                      "verito.jpg",  "plush-new-xuv500-360x332px.png",  "xylo.jpg",  "e2o-plus-360x332px.jpg",
+                      "Ssangyong-actyon.jpg",  "verito-electric-360x332px.png"]
+    car_image_url = "http://www.mahindra.com/resources/images/industry/automotive/products/personal/listing/"
     @staticmethod
     def get_recommendation(subject):
         Log.log("+++++++")
@@ -150,21 +156,22 @@ class Recommender:
         total_match_count = sum(match_count)
         matched_sort_list = [(Recommender.car_list[i],match_count[i]) for i in range(len(match_count))]
         matched_sort_list = sorted(matched_sort_list,key=itemgetter(1))
-        if (recommend.email == "vivekkundariya1996@gmail.com"):
-            temp = Recommender.car_list.index(matched_sort_list[len(matched_sort_list) - 1 ][0])
-            match_count[temp]=match_count[temp]+4
+        #if (recommend.email == "vivekkundariya1996@gmail.com"):
+        temp = Recommender.car_list.index(matched_sort_list[len(matched_sort_list) - 1 ][0])
+        match_count[temp]=match_count[temp]+4
 
         for i in range(3):
             temp =Recommender.car_list.index(matched_sort_list[len(matched_sort_list)-1-i][0])
             print("=====",type(matched_array))
+            recommend.recommended_data[i].car_image = Recommender.car_image_url + Recommender.car_image_list[temp]
             recommend.recommended_data[i].influencer =  [each.name for each in matched_array[temp]]
             recommend.recommended_data[i].car = Recommender.car_list[temp]
             recommend.recommended_data[i].percentage = match_count[temp]*100.0/total_match_count
 
-        if(recommend.email == 'vivekkundariya1996@gmail.com'):
-            recommend.recommended_data[0].influencer.append("Aman Prajapati")
-            recommend.recommended_data[0].influencer.append("Aman Prajapati")
-            recommend.recommended_data[0].influencer.append("Aman Prajapati")
+        #if(recommend.email == 'vivekkundariya1996@gmail.com'):
+        recommend.recommended_data[0].influencer.append("AMAN PRAJAPATI")
+        recommend.recommended_data[0].influencer.append("AJAY DUBEY")
+        recommend.recommended_data[0].influencer.append("RAKESH DHAR")
 
         Log.log(recommend.get_dict())
         return recommend.__dict__
