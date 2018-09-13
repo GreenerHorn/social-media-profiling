@@ -5,11 +5,12 @@ DB_UserData_Collection = 'UserData'
 DB_Recommendation_collection = "RecommendData"
 DB_Recommender_collection = "RecommenderData"
 
-FB_ID = "ajaysingh051986@gmail.com"
-FB_PASS = "qwerty1234"
 
-TWITTER_ID = "gj8337"
-TWITTER_PASS = "5friends"
+FB_ID = ""
+FB_PASS = ""
 
-LINKEDIN_ID = 'gujjujalsa1@gmail.com'
-LINKEDIN_PASS = '5friends$'
+TWITTER_ID = ""
+TWITTER_PASS = ""
+
+LINKEDIN_ID = ""
+LINKEDIN_PASS = ""
